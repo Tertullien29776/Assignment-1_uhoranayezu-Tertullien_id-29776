@@ -1,11 +1,11 @@
 # Assignment 1: PL/SQL - Joins, CTEs, and Window Functions
 
-## Student Details
-* **Name:** [Andika Amazina Yawe Hano]
-* **Student ID:** [Andika Student ID Yawe Hano]
-* **Course:** PL/SQL Assignment One
-* **Instructor:** Eric Maniraguha | **TA:** Afanyu Emmanuel[cite: 1]
-* **DBMS Used:** Oracle Database (or PostgreSQL / SQL Server)[cite: 1]
+Student Details
+Name:Uhoranayezu Tertullien
+Student ID:29776
+Course: PL/SQL Assignment One
+Instructor:Eric Maniraguha 
+* **DBMS Used:** Oracle Database (or PostgreSQL / SQL Server)
 
 ---
 
