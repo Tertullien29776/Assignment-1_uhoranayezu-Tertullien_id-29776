@@ -1,1 +1,212 @@
 
+
+--------------------------------------------------------------------------------
+-- 1. TABLE CREATION
+--------------------------------------------------------------------------------
+
+CREATE TABLE customers (
+    customer_id NUMBER PRIMARY KEY, 
+    customer_name VARCHAR2(100), 
+    email VARCHAR2(100), 
+    city VARCHAR2(50)
+);
+
+CREATE TABLE products (
+    product_id NUMBER PRIMARY KEY, 
+    product_name VARCHAR2(100), 
+    category VARCHAR2(50), 
+    price NUMBER(10,2)
+);
+
+CREATE TABLE orders (
+    order_id NUMBER PRIMARY KEY, 
+    customer_id NUMBER REFERENCES customers(customer_id), 
+    order_date DATE
+);
+
+CREATE TABLE order_items (
+    order_item_id NUMBER PRIMARY KEY, 
+    order_id NUMBER REFERENCES orders(order_id), 
+    product_id NUMBER REFERENCES products(product_id), 
+    quantity NUMBER
+);
+
+--------------------------------------------------------------------------------
+-- 2. SAMPLE DATA POPULATION
+--------------------------------------------------------------------------------
+
+-- Customers (5 customers)
+INSERT INTO customers VALUES (1, 'Alice Uwase', 'alice@gmail.com', 'Kigali');
+INSERT INTO customers VALUES (2, 'Jean Bosco', 'bosco@gmail.com', 'Butare');
+INSERT INTO customers VALUES (3, 'Clarisse Mukamana', 'clarisse@gmail.com', 'Gisenyi');
+INSERT INTO customers VALUES (4, 'Eric Mugisha', 'eric@gmail.com', 'Kigali');
+INSERT INTO customers VALUES (5, 'Diane Uwera', 'diane@gmail.com', 'Ruhengeri');
+
+-- Products (8 products across 3 categories)
+INSERT INTO products VALUES (101, 'Whole Milk 1L', 'Dairy', 1.20);
+INSERT INTO products VALUES (102, 'Cheddar Cheese 500g', 'Dairy', 4.50);
+INSERT INTO products VALUES (103, 'Sliced Bread', 'Bakery', 2.00);
+INSERT INTO products VALUES (104, 'Croissant', 'Bakery', 1.50);
+INSERT INTO products VALUES (105, 'Orange Juice 1L', 'Beverages', 3.00);
+INSERT INTO products VALUES (106, 'Mineral Water 500ml', 'Beverages', 0.50);
+INSERT INTO products VALUES (107, 'Yogurt 250ml', 'Dairy', 1.00);
+INSERT INTO products VALUES (108, 'Chocolate Muffin', 'Bakery', 2.20);
+
+-- Orders (15 orders spread across multiple dates)
+INSERT INTO orders VALUES (1, 1, TO_DATE('2026-09-01', 'YYYY-MM-DD'));
+INSERT INTO orders VALUES (2, 2, TO_DATE('2026-09-02', 'YYYY-MM-DD'));
+INSERT INTO orders VALUES (3, 1, TO_DATE('2026-09-03', 'YYYY-MM-DD'));
+INSERT INTO orders VALUES (4, 3, TO_DATE('2026-09-05', 'YYYY-MM-DD'));
+INSERT INTO orders VALUES (5, 4, TO_DATE('2026-09-06', 'YYYY-MM-DD'));
+INSERT INTO orders VALUES (6, 2, TO_DATE('2026-09-08', 'YYYY-MM-DD'));
+INSERT INTO orders VALUES (7, 5, TO_DATE('2026-09-10', 'YYYY-MM-DD'));
+INSERT INTO orders VALUES (8, 1, TO_DATE('2026-09-11', 'YYYY-MM-DD'));
+INSERT INTO orders VALUES (9, 3, TO_DATE('2026-09-12', 'YYYY-MM-DD'));
+INSERT INTO orders VALUES (10, 4, TO_DATE('2026-09-12', 'YYYY-MM-DD'));
+INSERT INTO orders VALUES (11, 2, TO_DATE('2026-09-13', 'YYYY-MM-DD'));
+INSERT INTO orders VALUES (12, 5, TO_DATE('2026-09-14', 'YYYY-MM-DD'));
+INSERT INTO orders VALUES (13, 3, TO_DATE('2026-09-15', 'YYYY-MM-DD'));
+INSERT INTO orders VALUES (14, 4, TO_DATE('2026-09-15', 'YYYY-MM-DD'));
+INSERT INTO orders VALUES (15, 1, TO_DATE('2026-09-16', 'YYYY-MM-DD'));
+
+-- Order Items (25 order items)
+INSERT INTO order_items VALUES (1, 1, 101, 2);
+INSERT INTO order_items VALUES (2, 1, 103, 1);
+INSERT INTO order_items VALUES (3, 2, 102, 1);
+INSERT INTO order_items VALUES (4, 2, 105, 3);
+INSERT INTO order_items VALUES (5, 3, 104, 4);
+INSERT INTO order_items VALUES (6, 3, 106, 5);
+INSERT INTO order_items VALUES (7, 4, 107, 2);
+INSERT INTO order_items VALUES (8, 4, 108, 1);
+INSERT INTO order_items VALUES (9, 5, 101, 3);
+INSERT INTO order_items VALUES (10, 5, 103, 2);
+INSERT INTO order_items VALUES (11, 6, 105, 2);
+INSERT INTO order_items VALUES (12, 6, 106, 6);
+INSERT INTO order_items VALUES (13, 7, 102, 1);
+INSERT INTO order_items VALUES (14, 7, 104, 3);
+INSERT INTO order_items VALUES (15, 8, 108, 2);
+INSERT INTO order_items VALUES (16, 9, 101, 4);
+INSERT INTO order_items VALUES (17, 9, 107, 3);
+INSERT INTO order_items VALUES (18, 10, 103, 2);
+INSERT INTO order_items VALUES (19, 10, 105, 1);
+INSERT INTO order_items VALUES (20, 11, 106, 10);
+INSERT INTO order_items VALUES (21, 12, 102, 2);
+INSERT INTO order_items VALUES (22, 13, 104, 1);
+INSERT INTO order_items VALUES (23, 13, 108, 3);
+INSERT INTO order_items VALUES (24, 14, 101, 1);
+INSERT INTO order_items VALUES (25, 15, 107, 5);
+
+COMMIT;
+
+--------------------------------------------------------------------------------
+-- 3. ASSIGNMENT QUESTIONS & QUERIES
+--------------------------------------------------------------------------------
+
+-- Q1: List every order with customer name, city, and order date (INNER JOIN)
+SELECT 
+    o.order_id,
+    c.customer_name,
+    c.city,
+    o.order_date
+FROM orders o
+INNER JOIN customers c ON o.customer_id = c.customer_id;
+
+-- Q2: List every order item with product name, category, price, and quantity ordered (JOIN)
+SELECT 
+    oi.order_item_id,
+    oi.order_id,
+    p.product_name,
+    p.category,
+    p.price,
+    oi.quantity,
+    (p.price * oi.quantity) AS total_item_price
+FROM order_items oi
+INNER JOIN products p ON oi.product_id = p.product_id;
+
+-- Q3: List all customers and their orders, including those with no orders (LEFT JOIN)
+SELECT 
+    c.customer_id,
+    c.customer_name,
+    o.order_id,
+    o.order_date
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id;
+
+-- Q4: Calculate per-customer total spend and return only those above average (CTE)
+WITH customer_spending AS (
+    SELECT 
+        c.customer_id,
+        c.customer_name,
+        SUM(oi.quantity * p.price) AS total_spent
+    FROM customers c
+    JOIN orders o ON c.customer_id = o.customer_id
+    JOIN order_items oi ON o.order_id = oi.order_id
+    JOIN products p ON oi.product_id = p.product_id
+    GROUP BY c.customer_id, c.customer_name
+)
+SELECT 
+    customer_id,
+    customer_name,
+    total_spent
+FROM customer_spending
+WHERE total_spent > (SELECT AVG(total_spent) FROM customer_spending);
+
+-- Q5: Rank customers by total amount spent, highest first (Window Function: RANK)
+SELECT 
+    c.customer_id,
+    c.customer_name,
+    SUM(oi.quantity * p.price) AS total_spent,
+    RANK() OVER (ORDER BY SUM(oi.quantity * p.price) DESC) AS spending_rank
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id
+GROUP BY c.customer_id, c.customer_name;
+
+-- Q6: Number each customer's orders chronologically (Window Function: ROW_NUMBER)
+SELECT 
+    o.order_id,
+    o.customer_id,
+    c.customer_name,
+    o.order_date,
+    ROW_NUMBER() OVER (PARTITION BY o.customer_id ORDER BY o.order_date, o.order_id) AS order_number
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id;
+
+-- Q7: Show running total of revenue over time ordered by date (Window Function Frame)
+WITH daily_revenue AS (
+    SELECT 
+        TRUNC(o.order_date) AS order_date,
+        SUM(oi.quantity * p.price) AS daily_rev
+    FROM orders o
+    JOIN order_items oi ON o.order_id = oi.order_id
+    JOIN products p ON oi.product_id = p.product_id
+    GROUP BY TRUNC(o.order_date)
+)
+SELECT 
+    order_date,
+    daily_rev,
+    SUM(daily_rev) OVER (ORDER BY order_date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total_revenue
+FROM daily_revenue
+ORDER BY order_date;
+
+-- Q8: Days passed between current and previous order for customers with >1 order (LAG)
+WITH customer_orders AS (
+    SELECT 
+        o.customer_id,
+        c.customer_name,
+        o.order_id,
+        o.order_date,
+        LAG(o.order_date) OVER (PARTITION BY o.customer_id ORDER BY o.order_date, o.order_id) AS previous_order_date
+    FROM orders o
+    JOIN customers c ON o.customer_id = c.customer_id
+)
+SELECT 
+    customer_id,
+    customer_name,
+    order_id,
+    order_date,
+    previous_order_date,
+    (order_date - previous_order_date) AS days_between_orders
+FROM customer_orders
+WHERE previous_order_date IS NOT NULL;
