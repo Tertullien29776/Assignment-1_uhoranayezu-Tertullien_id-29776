@@ -21,15 +21,6 @@ This project implements relational database tables (`customers`, `products`, `or
 3. **Common Table Expressions (CTEs):** Computes aggregate customer totals and filters results against the average customer spend[cite: 1].
 4. **Window Functions (`RANK`, `ROW_NUMBER`, `LAG`, and cumulative aggregates):** Performs advanced analytical processing such as customer tier ranking, chronological order sequencing, running revenue totals, and purchase frequency intervals[cite: 1].
 
----
-
-## How to Run
-1. Clone or download this repository[cite: 1].
-2. Open your preferred SQL/DBMS tool (e.g., Oracle SQL Developer, PostgreSQL pgAdmin)[cite: 1].
-3. Execute the script file `schema_and_queries.sql` sequentially to create tables, populate sample rows, and execute the analytical queries.
-
----
-
 ## Business Interpretation
 * **Sales Trends:** The running total queries help management monitor daily revenue milestones.
 * **Customer Retention:** Tracking the days elapsed between sequential orders via `LAG()` highlights customer purchasing habits and helps identify churn risks.
